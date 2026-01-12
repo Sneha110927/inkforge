@@ -1,65 +1,106 @@
-import Image from "next/image";
+import Link from "next/link";
+import { listPages } from "@/lib/page";
 
-export default function Home() {
+function DocIcon() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+      <path
+        d="M7 3h7l3 3v15a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3V6a3 3 0 0 1 3-3Z"
+        stroke="#2563eb"
+        strokeWidth="2"
+      />
+      <path d="M14 3v4a2 2 0 0 0 2 2h4" stroke="#2563eb" strokeWidth="2" />
+      <path
+        d="M8 13h8M8 17h8M8 9h4"
+        stroke="#2563eb"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function CodeIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+      <path
+        d="M8 9 5 12l3 3M16 9l3 3-3 3"
+        stroke="#2563eb"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path d="M14 7 10 17" stroke="#2563eb" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export default async function Home() {
+  const pages = await listPages().catch(() => []);
+  const sampleSlug = pages?.[0]?.slug ?? "getting-started";
+
+  return (
+    <div className="landing">
+      <div className="landingInner">
+        <div className="heroIcons">
+          <div className="iconPill">
+            <DocIcon />
+          </div>
+          <div style={{ opacity: 0.6, fontWeight: 800 }}>→</div>
+          <div className="iconPill">
+            <CodeIcon />
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
+
+        <h1 className="heroTitle">Markdown Site Generator</h1>
+        <p className="heroSubtitle">Write markdown. Instantly preview a website.</p>
+
+        <div className="heroActions">
+          <Link className="btnPrimary" href="/studio">
+            Open Studio <span style={{ fontWeight: 900 }}>→</span>
+          </Link>
+
+          {/* open published page in new tab */}
+          <a className="btnLink" href={`/site/${sampleSlug}`} target="_blank" rel="noreferrer">
+            View Sample Page
           </a>
         </div>
-      </main>
+
+        <div className="featureRow">
+          <div className="featureCard">
+            <div className="featureIcon">
+              <DocIcon />
+            </div>
+            <p className="featureTitle">Write Markdown</p>
+            <p className="featureDesc">Use familiar markdown syntax to create your content</p>
+          </div>
+
+          <div className="featureCard">
+            <div className="featureIcon">
+              <CodeIcon />
+            </div>
+            <p className="featureTitle">Live Preview</p>
+            <p className="featureDesc">See your changes instantly as you type</p>
+          </div>
+
+          <div className="featureCard">
+            <div className="featureIcon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                <path d="M5 12h14" stroke="#2563eb" strokeWidth="2" strokeLinecap="round" />
+                <path
+                  d="M13 5l7 7-7 7"
+                  stroke="#2563eb"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+            <p className="featureTitle">Clean URLs</p>
+            <p className="featureDesc">Generate pages with beautiful, SEO-friendly URLs</p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
