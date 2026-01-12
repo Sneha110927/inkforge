@@ -277,7 +277,7 @@ Start writing...
 
           <div className="colLabel">Markdown</div>
 
-          <div className="editorArea" style={{ height: "100%" }}>
+          <div className="editorArea">
             <MarkdownMonaco value={markdown} onChange={setMarkdown} />
           </div>
         </section>

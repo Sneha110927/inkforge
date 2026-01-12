@@ -8,12 +8,12 @@ type Ctx = {
 export async function GET(_: Request, ctx: Ctx) {
   const { slug } = await ctx.params;
 
-  const raw = await readPageRaw(slug);
-  if (!raw) {
+  const markdown = await readPageRaw(slug);
+  if (!markdown) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
-  return NextResponse.json({ markdown: raw });
+  return NextResponse.json({ markdown });
 }
 
 export async function DELETE(_: Request, ctx: Ctx) {
@@ -24,5 +24,5 @@ export async function DELETE(_: Request, ctx: Ctx) {
     return NextResponse.json({ error: "Failed to delete" }, { status: 400 });
   }
 
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({ ok: true, slug });
 }

@@ -465,3 +465,41 @@ button, input, textarea { font: inherit; }
   background: rgba(239, 68, 68, 0.12);
   transform: scale(1.05);
 }
+.studioMain {
+  min-height: 0;
+}
+
+/* optional: keep label aligned nicely */
+.colLabel {
+  display: flex;
+  align-items: center;
+}
+
+.studioMain {
+  min-height: 0;
+}
+
+
+/* FIX: preview column has only 2 rows in JSX (colTop + previewArea) */
+.previewCol {
+  grid-template-rows: 52px 1fr !important;
+  min-height: 0 !important;
+}
+
+.previewArea {
+  min-height: 0 !important;
+  height: auto !important;
+  overflow: auto !important;
+}
+
+/* Keep editor as 3 rows because it has colTop + colLabel + editorArea */
+.editorCol {
+  grid-template-rows: 52px 40px 1fr !important;
+  min-height: 0 !important;
+}
+
+.editorArea {
+  min-height: 0 !important;
+  height: auto !important;
+  overflow: hidden !important;
+}

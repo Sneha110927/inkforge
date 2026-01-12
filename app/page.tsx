@@ -30,7 +30,12 @@ function CodeIcon() {
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      <path d="M14 7 10 17" stroke="#2563eb" strokeWidth="2" strokeLinecap="round" />
+      <path
+        d="M14 7 10 17"
+        stroke="#2563eb"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
     </svg>
   );
 }
@@ -53,7 +58,9 @@ export default async function Home() {
         </div>
 
         <h1 className="heroTitle">Markdown Site Generator</h1>
-        <p className="heroSubtitle">Write markdown. Instantly preview a website.</p>
+        <p className="heroSubtitle">
+          Write markdown. Instantly preview a website.
+        </p>
 
         <div className="heroActions">
           <Link className="btnPrimary" href="/studio">
@@ -61,7 +68,12 @@ export default async function Home() {
           </Link>
 
           {/* open published page in new tab */}
-          <a className="btnLink" href={`/site/${sampleSlug}`} target="_blank" rel="noreferrer">
+          <a
+            className="btnLink"
+            href="/site/getting-started"
+            target="_blank"
+            rel="noreferrer"
+          >
             View Sample Page
           </a>
         </div>
@@ -72,7 +84,9 @@ export default async function Home() {
               <DocIcon />
             </div>
             <p className="featureTitle">Write Markdown</p>
-            <p className="featureDesc">Use familiar markdown syntax to create your content</p>
+            <p className="featureDesc">
+              Use familiar markdown syntax to create your content
+            </p>
           </div>
 
           <div className="featureCard">
@@ -80,13 +94,20 @@ export default async function Home() {
               <CodeIcon />
             </div>
             <p className="featureTitle">Live Preview</p>
-            <p className="featureDesc">See your changes instantly as you type</p>
+            <p className="featureDesc">
+              See your changes instantly as you type
+            </p>
           </div>
 
           <div className="featureCard">
             <div className="featureIcon">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                <path d="M5 12h14" stroke="#2563eb" strokeWidth="2" strokeLinecap="round" />
+                <path
+                  d="M5 12h14"
+                  stroke="#2563eb"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                />
                 <path
                   d="M13 5l7 7-7 7"
                   stroke="#2563eb"
@@ -97,7 +118,9 @@ export default async function Home() {
               </svg>
             </div>
             <p className="featureTitle">Clean URLs</p>
-            <p className="featureDesc">Generate pages with beautiful, SEO-friendly URLs</p>
+            <p className="featureDesc">
+              Generate pages with beautiful, SEO-friendly URLs
+            </p>
           </div>
         </div>
       </div>
