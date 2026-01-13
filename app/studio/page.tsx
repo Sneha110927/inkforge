@@ -1,5 +1,5 @@
 "use client";
-
+import AIAssistButton from "@/app/components/AIAssistButton";
 import { useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import { FiTrash2 } from "react-icons/fi";
@@ -10,8 +10,9 @@ import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import MermaidBlock from "./Mermaid";
 
-
-const MarkdownMonaco = dynamic(() => import("./MarkdownMonaco"), { ssr: false });
+const MarkdownMonaco = dynamic(() => import("./MarkdownMonaco"), {
+  ssr: false,
+});
 
 type ThemeType = "docs" | "blog";
 type PageItem = {
@@ -40,7 +41,11 @@ Edit this text and click **Save**.
 `;
 
 function slugify(input: string) {
-  return input.trim().toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-_]/g, "");
+  return input
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9-_]/g, "");
 }
 
 function normalizeNewlines(md: string) {
@@ -223,7 +228,9 @@ Start writing...
 
     const data = await res.json().catch(() => null);
     if (!res.ok) {
-      setStatus(typeof data?.error === "string" ? data.error : "Failed to save");
+      setStatus(
+        typeof data?.error === "string" ? data.error : "Failed to save"
+      );
       return;
     }
 
@@ -276,11 +283,22 @@ Start writing...
         <div className="topBarTitle">Markdown Site Generator</div>
 
         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+          <AIAssistButton
+            theme={theme}
+            getMarkdown={() => markdown}
+            setMarkdown={setMarkdown}
+
+
+            setStatus={setStatus}
+          />
+
           <span style={{ color: "#6b7280", fontSize: 13 }}>{status}</span>
 
           <select
             value={theme}
-            onChange={(e) => onThemeChange(e.target.value === "blog" ? "blog" : "docs")}
+            onChange={(e) =>
+              onThemeChange(e.target.value === "blog" ? "blog" : "docs")
+            }
             style={{
               padding: "8px 10px",
               borderRadius: 10,
@@ -295,7 +313,12 @@ Start writing...
             <option value="blog">Blog</option>
           </select>
 
-          <a className="btnLink" href="/api/export" target="_blank" rel="noreferrer">
+          <a
+            className="btnLink"
+            href="/api/export"
+            target="_blank"
+            rel="noreferrer"
+          >
             Export ZIP
           </a>
 
@@ -318,11 +341,19 @@ Start writing...
             {pages.map((p) => {
               const label = p.theme === "blog" ? "Blog" : "Docs";
               return (
-                <div key={p.slug} className={`pageRow ${p.slug === selectedSlug ? "pageRowActive" : ""}`}>
-                  <button className="pageRowMain" onClick={() => onSelect(p.slug)}>
+                <div
+                  key={p.slug}
+                  className={`pageRow ${p.slug === selectedSlug ? "pageRowActive" : ""}`}
+                >
+                  <button
+                    className="pageRowMain"
+                    onClick={() => onSelect(p.slug)}
+                  >
                     <div className="pageTitle">
                       {p.title ?? p.slug}
-                      <span className={`themeBadge ${p.theme === "blog" ? "themeBlog" : "themeDocs"}`}>
+                      <span
+                        className={`themeBadge ${p.theme === "blog" ? "themeBlog" : "themeDocs"}`}
+                      >
                         {label}
                       </span>
                     </div>
@@ -355,7 +386,12 @@ Start writing...
               />
             </div>
 
-            <a className="openPageBtn" href={`/site/${slugify(slugInput) || "getting-started"}`} target="_blank" rel="noreferrer">
+            <a
+              className="openPageBtn"
+              href={`/site/${slugify(slugInput) || "getting-started"}`}
+              target="_blank"
+              rel="noreferrer"
+            >
               ↗ Open Page
             </a>
           </div>
@@ -372,14 +408,24 @@ Start writing...
             <div style={{ fontWeight: 700, color: "#374151" }}>Preview</div>
           </div>
 
-          <div className={`previewArea ${theme === "blog" ? "previewBlog" : "previewDocs"}`}>
+          <div
+            className={`previewArea ${theme === "blog" ? "previewBlog" : "previewDocs"}`}
+          >
             <ReactMarkdown
-              remarkPlugins={[remarkGfm, [remarkToc, { heading: "Table of Contents", tight: true }]]}
-              rehypePlugins={[rehypeSlug, [rehypeAutolinkHeadings, { behavior: "wrap" }]]}
+              remarkPlugins={[
+                remarkGfm,
+                [remarkToc, { heading: "Table of Contents", tight: true }],
+              ]}
+              rehypePlugins={[
+                rehypeSlug,
+                [rehypeAutolinkHeadings, { behavior: "wrap" }],
+              ]}
               components={{
                 code({ inline, className, children, ...props }) {
                   const cls = className ?? "";
-                  const lang = cls.startsWith("language-") ? cls.replace("language-", "") : cls;
+                  const lang = cls.startsWith("language-")
+                    ? cls.replace("language-", "")
+                    : cls;
 
                   if (!inline && lang === "mermaid") {
                     return (
@@ -389,7 +435,8 @@ Start writing...
                     );
                   }
 
-                  if (inline) return <code className={className}>{children}</code>;
+                  if (inline)
+                    return <code className={className}>{children}</code>;
 
                   return (
                     <pre>
