@@ -7,12 +7,8 @@ type SavePagePayload = {
 };
 
 export async function GET() {
-  try {
-    const pages = await listPages();
-    return NextResponse.json({ pages });
-  } catch {
-    return NextResponse.json({ error: "Failed to list pages" }, { status: 500 });
-  }
+  const pages = await listPages();
+  return NextResponse.json({ pages });
 }
 
 export async function POST(req: Request) {
@@ -28,18 +24,14 @@ export async function POST(req: Request) {
   const markdown = typeof body.markdown === "string" ? body.markdown : "";
 
   if (!slug || !markdown) {
-    return NextResponse.json(
-      { error: "slug and markdown are required" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "slug and markdown are required" }, { status: 400 });
   }
 
   try {
     const result = await writePage(slug, markdown);
     return NextResponse.json({ ok: true, ...result });
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "Failed to save page";
+    const message = error instanceof Error ? error.message : "Failed to save page";
     return NextResponse.json({ error: message }, { status: 400 });
   }
 }

@@ -2,15 +2,18 @@ import fs from "fs/promises";
 import path from "path";
 import matter from "gray-matter";
 
+export type ThemeType = "docs" | "blog";
+
 export type PageMeta = {
   slug: string;
   title?: string;
   description?: string;
+  theme?: ThemeType;
+  tags?: string[];
+  date?: string;
 };
 
 const CONTENT_DIR = path.join(process.cwd(), "content");
-
-/* ---------------- LIST PAGES (used by Studio & Home) ---------------- */
 
 export async function listPages(): Promise<PageMeta[]> {
   try {
@@ -23,26 +26,28 @@ export async function listPages(): Promise<PageMeta[]> {
         const raw = await fs.readFile(path.join(CONTENT_DIR, file), "utf8");
         const { data } = matter(raw);
 
+        const theme: ThemeType = data?.theme === "blog" ? "blog" : "docs";
+        const tags = Array.isArray(data?.tags)
+          ? data.tags.filter((t: unknown): t is string => typeof t === "string")
+          : [];
+
         return {
           slug,
           title: typeof data?.title === "string" ? data.title : slug,
-          description:
-            typeof data?.description === "string" ? data.description : undefined,
+          description: typeof data?.description === "string" ? data.description : undefined,
+          theme,
+          tags,
+          date: typeof data?.date === "string" ? data.date : undefined,
         };
       })
     );
 
-    pages.sort((a, b) =>
-      (a.title ?? a.slug).localeCompare(b.title ?? b.slug)
-    );
-
+    pages.sort((a, b) => (a.title ?? a.slug).localeCompare(b.title ?? b.slug));
     return pages;
   } catch {
     return [];
   }
 }
-
-/* ---------------- RAW MARKDOWN (used by Editor) ---------------- */
 
 export async function readPageRaw(slug: unknown): Promise<string | null> {
   if (typeof slug !== "string") return null;
@@ -50,39 +55,40 @@ export async function readPageRaw(slug: unknown): Promise<string | null> {
   const safeSlug = slug.replace(/[^a-zA-Z0-9-_]/g, "");
   if (!safeSlug) return null;
 
+  const filePath = path.join(CONTENT_DIR, `${safeSlug}.md`);
   try {
-    return await fs.readFile(
-      path.join(CONTENT_DIR, `${safeSlug}.md`),
-      "utf8"
-    );
+    return await fs.readFile(filePath, "utf8");
   } catch {
     return null;
   }
 }
 
-/* ---------------- PARSED MARKDOWN (used by /site) ---------------- */
-
-export async function readPageParsed(slug: unknown) {
+export async function readPageParsed(
+  slug: unknown
+): Promise<{ meta: PageMeta; content: string } | null> {
   if (typeof slug !== "string") return null;
 
   const safeSlug = slug.replace(/[^a-zA-Z0-9-_]/g, "");
   if (!safeSlug) return null;
 
+  const filePath = path.join(CONTENT_DIR, `${safeSlug}.md`);
   try {
-    const raw = await fs.readFile(
-      path.join(CONTENT_DIR, `${safeSlug}.md`),
-      "utf8"
-    );
+    const raw = await fs.readFile(filePath, "utf8");
     const { data, content } = matter(raw);
+
+    const theme: ThemeType = data?.theme === "blog" ? "blog" : "docs";
+    const tags = Array.isArray(data?.tags)
+      ? data.tags.filter((t: unknown): t is string => typeof t === "string")
+      : [];
 
     return {
       meta: {
         slug: safeSlug,
         title: typeof data?.title === "string" ? data.title : safeSlug,
-        description:
-          typeof data?.description === "string"
-            ? data.description
-            : undefined,
+        description: typeof data?.description === "string" ? data.description : undefined,
+        theme,
+        tags,
+        date: typeof data?.date === "string" ? data.date : undefined,
       },
       content,
     };
@@ -91,18 +97,13 @@ export async function readPageParsed(slug: unknown) {
   }
 }
 
-/* ---------------- WRITE PAGE ---------------- */
-
 export async function writePage(slug: string, rawMarkdown: string) {
   const safeSlug = slug.replace(/[^a-zA-Z0-9-_]/g, "");
   if (!safeSlug) throw new Error("Invalid slug.");
 
   await fs.mkdir(CONTENT_DIR, { recursive: true });
-  await fs.writeFile(
-    path.join(CONTENT_DIR, `${safeSlug}.md`),
-    rawMarkdown,
-    "utf8"
-  );
+  const filePath = path.join(CONTENT_DIR, `${safeSlug}.md`);
+  await fs.writeFile(filePath, rawMarkdown, "utf8");
 
   return { slug: safeSlug };
 }
@@ -114,7 +115,6 @@ export async function deletePage(slug: unknown): Promise<boolean> {
   if (!safeSlug) return false;
 
   const filePath = path.join(CONTENT_DIR, `${safeSlug}.md`);
-
   try {
     await fs.unlink(filePath);
     return true;
